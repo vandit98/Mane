@@ -93,3 +93,12 @@ The Render free tier only provides 512 MB RAM, which isn’t enough to load the 
 So instead, I use an LLM to handle the conversation and then generate the recommended product.
 
 Locally, the suggestion workflow creates an embedding of the user’s query, refines the query, and then performs a semantic similarity match between embeddings to identify the top 3 results.
+
+
+## Screenshot
+<img width="1500" height="689" alt="image" src="https://github.com/user-attachments/assets/5d57ea6c-74b9-4d19-a73b-84248a8594a5" />
+<img width="1273" height="301" alt="image" src="https://github.com/user-attachments/assets/8a01fa62-c063-4c64-b489-646a07482a9c" />
+
+<img width="1500" height="689" alt="image" src="https://github.com/user-attachments/assets/cd3599c7-a3b0-49fe-acd7-3dd0b09b1f5e" />
+<img width="1500" height="890" alt="image" src="https://github.com/user-attachments/assets/0c23ac83-76d1-4324-9bfd-ac889ef06ead" />
+
