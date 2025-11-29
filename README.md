@@ -85,3 +85,9 @@ frontend/
     pages/      # Page views
     services/   # API calls
 ```
+
+## Problem i faced 
+The Render free tier only provides 512 MB RAM, which isn’t enough to load the sentence-transformers model (it requires ~800 MB with PyTorch).
+So instead, I use an LLM to handle the conversation and then generate the recommended product.
+
+Locally, the suggestion workflow creates an embedding of the user’s query, refines the query, and then performs a semantic similarity match between embeddings to identify the top 3 results.
