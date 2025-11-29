@@ -1,5 +1,7 @@
 # Mane - Hair Care Shop
 
+deployment Link - https://neusearch-ei5c888y3-vandit98s-projects.vercel.app/
+
 An e-commerce platform with an AI-powered shopping assistant that helps users find the right hair care products.
 
 ## What it does
