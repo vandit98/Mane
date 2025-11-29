@@ -16,37 +16,35 @@ class RAGService:
         genai.configure(api_key=settings.gemini_api_key)
         self.model = genai.GenerativeModel(settings.chat_model)
     
+    def retrieve_by_text_search(self, query: str, top_k: int = 5) -> List[Product]:
+        """Retrieve products using text search"""
+        keywords = query.lower().split()
+        products = self.db.query(Product).all()
+        
+        scored_products = []
+        for product in products:
+            score = 0
+            searchable = f"{product.title} {product.description or ''} {product.features or ''} {' '.join(product.tags or [])}".lower()
+            
+            for keyword in keywords:
+                if len(keyword) > 2 and keyword in searchable:
+                    score += searchable.count(keyword)
+            
+            if score > 0:
+                scored_products.append((score, product))
+        
+        scored_products.sort(key=lambda x: x[0], reverse=True)
+        
+        if not scored_products:
+            return self.db.query(Product).limit(top_k).all()
+        
+        return [p for _, p in scored_products[:top_k]]
+    
     def retrieve_relevant_products(self, query: str, top_k: int = 5) -> List[Product]:
-        """Retrieve relevant products using vector similarity search"""
-        query_embedding = self.embedding_service.generate_query_embedding(query)
-        
-        sql = text("""
-            SELECT id, title, price, compare_price, description, features, 
-                   image_url, images, category, vendor, product_type, tags, url, external_id,
-                   embedding <=> :embedding AS distance
-            FROM products
-            WHERE embedding IS NOT NULL
-            ORDER BY embedding <=> :embedding
-            LIMIT :limit
-        """)
-        
-        result = self.db.execute(sql, {"embedding": str(query_embedding), "limit": top_k})
-        rows = result.fetchall()
-        
-        products = []
-        for row in rows:
-            product = Product(
-                id=row[0], title=row[1], price=row[2], compare_price=row[3],
-                description=row[4], features=row[5], image_url=row[6],
-                images=row[7], category=row[8], vendor=row[9],
-                product_type=row[10], tags=row[11], url=row[12], external_id=row[13]
-            )
-            products.append(product)
-        
-        return products
+        """Retrieve relevant products - uses text search (memory efficient)"""
+        return self.retrieve_by_text_search(query, top_k)
 
     def build_context(self, products: List[Product]) -> str:
-        """Build context from retrieved products for the LLM"""
         if not products:
             return "No products found in the database."
         
