@@ -13,9 +13,11 @@ export function HomePage() {
     async function fetchProducts() {
       try {
         const data = await getProducts(0, 50);
-        setProducts(data.products);
-      } catch {
-        setError('Failed to load products. Make sure the backend is running.');
+        setProducts(data?.products || []);
+      } catch (err) {
+        console.error('Failed to fetch products:', err);
+        setError('Failed to load products. Backend may still be starting up.');
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -34,8 +36,15 @@ export function HomePage() {
 
   if (error) {
     return (
-      <div className="home-error">
-        <p>{error}</p>
+      <div className="home-page">
+        <section className="hero">
+          <h1>Your Hair, Your Way</h1>
+          <p>Discover science-backed hair care solutions tailored to your needs</p>
+        </section>
+        <div className="home-error">
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
       </div>
     );
   }
@@ -55,8 +64,8 @@ export function HomePage() {
 
         {products.length === 0 ? (
           <div className="no-products">
-            <p>No products found. Run the scraper to populate the database.</p>
-            <code>POST /api/scraper/run</code>
+            <p>No products found. The backend may still be starting up.</p>
+            <button onClick={() => window.location.reload()}>Retry</button>
           </div>
         ) : (
           <div className="products-grid">
