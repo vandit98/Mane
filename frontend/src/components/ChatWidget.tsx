@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChatMessage, Product } from '../types';
+import { ChatMessage } from '../types';
 import { sendChatMessage } from '../services/api';
 import { ProductCard } from './ProductCard';
 import './ChatWidget.css';

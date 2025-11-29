@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Product, ProductListResponse, ChatResponse, ChatMessage } from '../types';
 
-const API_BASE = import.meta.env.PROD ? '' : '';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const api = axios.create({
   baseURL: `${API_BASE}/api`,
@@ -41,4 +41,3 @@ export async function runScraper(): Promise<{ status: string; message: string }>
   const { data } = await api.post('/scraper/run');
   return data;
 }
-
